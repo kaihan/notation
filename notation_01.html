@@ -1,0 +1,223 @@
+<!doctype html>
+<html class="no-js" lang="zh-tw">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+		
+        <link rel="Shortcut Icon" href="img\ico\fire.ico">
+    
+<title>spatial movement notation</title>
+
+
+	<script src="js/jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
+	<script src="js/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+	<link href="js/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet" type="text/css">
+
+	<!--<script type="text/javascript" src="js/jquery-1.2.6.pack.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/ui.core.js"></script>
+	<script type="text/javascript" src="js/ui.resizable.js"></script>
+	        -->
+        
+<style type="text/css">
+body {
+	background-image: url(img/bg.jpg);
+}
+	.note{
+	/*border:1px solid #930;*/
+	width: 80%;
+	margin: auto;	/*邊界*/
+	height: 30px;
+	/*background-color: #FFFFFF;*/	/*字串對話框底色*/
+	font-size: 13px;
+	color: #2B5F75;	/*字體顏色*/
+	font-family: Arial, Helvetica, sans-serif;
+	position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 50px;	/*與視窗底部的距離*/
+		margin: auto;	/*邊界*/
+		text-align: center;	/*文字顯示於中間*/
+		
+		
+	}
+
+	.line{
+		margin: auto;	/*邊界*/
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 180px;
+	}
+	
+	.icon{
+	/*border:1px solid #930;*/
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 100px;	/*圖片與視窗底部的距離*/
+	margin: auto;	/*邊界*/
+	text-align: center;
+	height: 50px;
+	}
+	
+	.icon img{    
+		height: 45px; 
+		margin: 0 15px;
+		/*圖片間距*/
+		
+		/*overflow:hidden;*/
+	}
+	
+	.icon .draggable{
+		/*width: 80px;	/*圖片原始大小*/
+		/*overflow:hidden;*/
+		/*style="margin-left: -20px;"*/
+	}
+	
+	.inside-drop-zone{
+		border:1px solid #930;
+	}
+	
+
+	.divblock{
+		/*border:1px solid #930;*/
+		display:inline-block;
+		text-align:center;
+		width:50px;
+		border:1px solid #930;
+	}
+	.divblock img{
+	border:1px solid #930;
+		display: block;
+		margin:auto;
+	}
+
+	
+	.bu{	/*按鈕放置的div*/
+	/*border:1px solid #930;*/
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 25px;	/*圖片與視窗底部的距離*/
+	text-align: center;
+}
+    
+	
+</style>
+
+<div>
+
+<img id="image" alt="image" width="100%" height="100%" />	<!--圖片位置、大小，width="100" height="100" -->
+</div>
+
+<div class="line">
+
+    
+</div>
+
+
+
+<div class="line">
+
+    <hr align="center" width="95%" color="#91989F">	
+    <!--hr:水平線-->
+    
+</div>
+
+<div class="icon" id="iconID">	
+	
+	<img id="beginning" src="img/beginning.svg" title="起始點（beginning）" class="draggable">
+	<img id="regular speed" src="img/regular speed.svg" title="普通速度（regular speed）" class="draggable">
+	<img id="slow speed" src="img/slow speed.svg" title="緩慢速度（slow speed）" class="draggable">
+	<img id="cross join" src="img/cross join.svg" title="十字連接點（cross join）" class="draggable">
+	<img id="t-shape join" src="img/t-shape join.svg" title="相交連接點（t-shape join）" class="draggable">
+	<img id="left diagonal join" src="img/left diagonal join.svg" title="左斜向連接點（left diagonal join）" class="draggable">
+	<img id="right diagonal join" src="img/right diagonal join.svg" title="右斜向連接點（right diagonal join）" class="draggable">
+	<img id="y-shape join" src="img/y-shape join.svg" title="分叉接連接點（y-shape join）" class="draggable">
+	<img id="turn join" src="img/turn join.svg" title="迴轉連接點（turn join）" class="draggable">
+	<img id="twist join" src="img/twist join.svg" title="急彎連接點（twist join）" class="draggable">
+	<img id="node" src="img/node.svg" title="節點（node）" class="draggable">
+	<img id="event" src="img/event.svg" title="事件（event）" class="draggable">
+	<img id="arrow" src="img/arrow.svg" title="箭頭（arrow）" class="draggable">
+	<img id="ending" src="img/ending.svg" title="結束點（ending）" class="draggable">
+    
+    </div>
+   
+<div class="bu">
+<input type="file" onChange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">	<!--圖片輸入按鈕-->
+
+</div>
+    
+        <!--<div class="divblock">
+            <img src="img/dabbing.jpg" title="小節（bar）" class="draggable">    
+            <img src="img/ending.svg" title="完結（ending）">
+        </div>
+        <div class="divblock">
+            <img src="img/dabbing.jpg" title="小節（bar）" class="draggable">    
+            <img src="img/ending.svg" title="完結（ending）" >
+        </div>
+        <div class="divblock">
+            <img src="img/dabbing.jpg" title="小節（bar）" class="draggable">    
+            <img src="img/ending.svg" title="完結（ending）">
+        </div>
+     
+    </div>-->
+
+
+
+<div class="note"> </div>
+
+<script>
+$(document).ready(function(){
+ 
+	$('.draggable').draggable({helper: "clone"});
+	
+	$('.draggable').bind('dragstop', function(event, ui) { 
+	
+		$(this).after(			
+			$(ui.helper).clone().draggable().height(60)
+		);
+		
+		
+	
+		var tmptxt = $('.note').text();
+		tmptxt = tmptxt + ' { ' + $(this).attr('id') + ' } ';
+		
+		$('.note').text(tmptxt);	//輸出字串
+	
+	
+		$(".inside-drop-zone").draggable({helper: "original"});
+		$(".inside-drop-zone").resizable();
+	
+	});
+  
+
+	/*$("img").resizable({ 
+		handles: "all", 
+		transparent: false,	//圖片不出現邊框
+		helper: "proxy" 
+	});*/
+	
+});
+
+	/*var textover_word; //變數：文字框
+                
+		$clone.TextOver({}, function() {
+ 			textover_word = this;
+				});*/
+
+
+	//圖片輸入
+	var loadFile = function(event) {
+		var output = document.getElementById('output');
+		output.src = URL.createObjectURL(event.target.files[0]);
+	};
+
+
+
+</script>
+
+</body>
+
+</html>

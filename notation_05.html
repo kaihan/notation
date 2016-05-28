@@ -1,0 +1,505 @@
+﻿<!doctype html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+		
+        <link rel="Shortcut Icon" href="img\ico\fire.ico">
+
+<meta charset="utf-8">
+
+<title>spatial movement notation</title>
+
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+<script src="js/jQueryRotate.js"></script>
+
+<script src="js/jquery.textover.min.js"></script>
+
+<link href="js/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet" type="text/css">
+
+<script src="jquery.jqscribble.js" type="text/javascript"></script>
+<script src="jqscribble.extrabrushes.js" type="text/javascript"></script>
+
+<style type="text/css">
+
+body{
+	background-image: url(img/bg_01.jpg);
+}
+
+.drop-zone{
+    position: relative;
+	/*border: 1px solid #A8D8B9; /*白綠*/
+	height: 750px;
+	width: 100%;
+	margin: 0 auto;
+	margin-top: 0px;
+	}
+	
+.clear{
+	clear:both;
+}
+
+.drag-area{
+	/*position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 100px;	/*圖片與視窗底部的距離*/
+	/*margin: 0 auto;	/*邊界*/
+	text-align: center;
+}
+
+.drag{	/*下方圖片按鈕*/
+	height: 35px;
+	/*width: 35px;	/*圖片寬度*/
+	/*white-space: nowrap; 強制不換行*/
+	display: inline-block;
+    margin: 20px 15px 25px 15px;
+	/*padding-top: 10px;		/*上方的內距*/
+	/*padding-left: 10px;		/*左方的內距*/
+	/*padding-right: 10px;	/*右方的內距*/
+	/*padding-bottom: 20px;	/*下方的內距*/
+	}
+
+.drag .iconImg{
+	/*width: 100%;*/
+	height: 100%;
+    width: auto;	
+		/*top margin is 10px
+		right margin is 5px
+		bottom margin is 15px
+		left margin is 20px*/
+}
+.ui-resizable{ /*複製後的容器*/
+     width: 60px;
+    height: 60px; 
+}
+
+.ui-resizable .iconImg{/*讓圖片的width height與上層容器相同*/
+    width: 100%;
+    height: 100%;
+}
+
+.green {
+	color: #3e5706;
+ 
+    background: #a5cd4e; /*Old browsers*/
+    background: -moz-linear-gradient(top,  #a5cd4e 0%, #6b8f1a 100%); /*FF3.6+*/
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a5cd4e), color-stop(100%,#6b8f1a)); /*Chrome,Safari4+*/
+    background: -webkit-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%); /*Chrome10+,Safari5.1+*/
+    background: -o-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%); /*Opera 11.10+*/
+    background: -ms-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%); /*IE10+*/
+    background: linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%); /*W3C*/
+}
+
+.button{
+	background-color: #A8D8B9; /*白綠*/
+	border: none;
+    color: white;
+    /*padding: 15px 32px;*/
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.bu{	/*按鈕放置的div*/
+    /*position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 35px;	/*圖片與視窗底部的距離*/
+	text-align: center;
+}
+
+.big {
+    padding: 0 40px;
+    padding-top: 10px;
+    height: 45px;
+    text-transform: uppercase;
+    font: bold 20px/22px Arial, sans-serif;
+}
+ 
+.big span {
+    display: block;
+    text-transform: none;
+    font: italic normal 12px/18px Georgia, sans-serif;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, .12);
+}
+
+#uploadImg{
+    position: absolute;
+    width: auto;
+    max-height: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 0;
+}
+   
+/*.line{
+	margin: auto;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 180px;
+}*/
+
+</style>
+
+
+
+
+<script>
+function getCurrentRotation( elid ) {
+  var el = document.getElementById(elid);
+  var st = window.getComputedStyle(el, null);
+  var tr = st.getPropertyValue("-webkit-transform") ||
+       st.getPropertyValue("-moz-transform") ||
+       st.getPropertyValue("-ms-transform") ||
+       st.getPropertyValue("-o-transform") ||
+       st.getPropertyValue("transform") ||
+       "fail...";
+
+  if( tr !== "none") {
+    console.log('Matrix: ' + tr);
+
+    var values = tr.split('(')[1];
+      values = values.split(')')[0];
+      values = values.split(',');
+    var a = values[0];
+    var b = values[1];
+    var c = values[2];
+    var d = values[3];
+
+    var scale = Math.sqrt(a*a + b*b);
+
+    // First option, don't check for negative result
+    // Second, check for the negative result
+    /**/
+    var radians = Math.atan2(b, a);
+    var angle = Math.round( radians * (180/Math.PI));
+    /*/
+    var radians = Math.atan2(b, a);
+    if ( radians < 0 ) {
+      radians += (2 * Math.PI);
+    }
+    var angle = Math.round( radians * (180/Math.PI));
+    /**/
+    
+  } else {
+    var angle = 0;
+  }
+
+  // works!
+  console.log('Rotate: ' + angle + 'deg');
+  //$('#results').append('<p>Rotate: ' + angle + 'deg</p>');
+}
+
+function getStyle(oElm, strCssRule){
+    var strValue = "";
+    if(document.defaultView && document.defaultView.getComputedStyle){
+        strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+    }
+    else if(oElm.currentStyle){
+        strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1){
+            return p1.toUpperCase();
+        });
+        strValue = oElm.currentStyle[strCssRule];
+    }
+    return strValue;
+}
+
+function getCurrentRotationFixed( elid ) {
+  //var el = document.getElementById(elid);
+  var el = elid;
+  //var st = window.getComputedStyle(el, null);
+  console.log( getStyle(el, "transform") );
+  var st = el.css();
+  var tr = st.getPropertyValue("-webkit-transform") ||
+       st.getPropertyValue("-moz-transform") ||
+       st.getPropertyValue("-ms-transform") ||
+       st.getPropertyValue("-o-transform") ||
+       st.getPropertyValue("transform") ||
+       "fail...";
+
+  if( tr !== "none") {
+    console.log('Matrix: ' + tr);
+
+    var values = tr.split('(')[1];
+      values = values.split(')')[0];
+      values = values.split(',');
+    var a = values[0];
+    var b = values[1];
+    var c = values[2];
+    var d = values[3];
+
+    var scale = Math.sqrt(a*a + b*b);
+
+    // First option, don't check for negative result
+    // Second, check for the negative result
+    /** /
+    var radians = Math.atan2(b, a);
+    var angle = Math.round( radians * (180/Math.PI));
+    /*/
+    var radians = Math.atan2(b, a);
+    if ( radians < 0 ) {
+      radians += (2 * Math.PI);
+    }
+    var angle = Math.round( radians * (180/Math.PI));
+    /**/
+    
+  } else {
+    var angle = 0;
+  }
+
+  // works!
+  console.log('Rotate: ' + angle + 'deg');
+  //$('#results').append('<p>Rotate: ' + angle + 'deg</p>');
+}
+
+
+
+function getRotationDegrees(obj) {
+    //console.log(obj);
+    var matrix = obj.css("-webkit-transform") ||
+    obj.css("-moz-transform")    ||
+    obj.css("-ms-transform")     ||
+    obj.css("-o-transform")      ||
+    obj.css("transform");
+    if(matrix !== 'none') {
+
+        var values = matrix.split('(')[1].split(')')[0].split(',');
+        var a = values[0];
+        var b = values[1];
+        /*will add*/
+        var c = values[2];
+        var d = values[3];
+
+        var scale = Math.sqrt(a*a + b*b);
+
+        var radians = Math.atan2(b, a);
+        if ( radians < 0 ) {
+          radians += (2 * Math.PI);
+        }
+        var angle = Math.round( radians * (180/Math.PI));
+
+
+        /*will add*/
+
+        //var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
+    } else { var angle = 0; }
+    console.log(angle);
+    return angle;
+    //return (angle < 0) ? angle + 360 : angle;
+}
+
+var value = 0
+
+
+$(document).ready(function($) {
+
+  $("#test").jqScribble();
+
+    $(".drop-zone").droppable({
+        accept: '.drag',
+        drop: function(event, ui) {
+            var $clone = ui.helper.clone(); //.width(200).height(150)拖拉後放大
+            if (!$clone.is('.inside-drop-zone')) {
+                $(this).append($clone.addClass('inside-drop-zone').draggable({
+                    containment: '.drop-zone'
+                }));
+
+                $clone.resizable({	//this works but I dont want it to on outside elements
+                    helper: "ui-resizable-helper"
+                });
+
+                $clone.find('img').rotate({
+                  duration: 10,        
+                  bind:
+                  {
+                    click: function(){
+						//console.log('click');
+                        //console.log( getCurrentRotationFixed($(this)) );
+                        //console.log( $(this).css('transform') );
+                        //console.log( getRotationDegrees($(this)) );
+						//value += 45;
+                        if( getRotationDegrees($(this)) >= 360 || getRotationDegrees($(this))<0 ){
+                            value = 0;
+                        }else{
+                            value = getRotationDegrees($(this)) + 45;
+                        }
+                        
+						//value = getRotationDegrees($(this)) += 180;
+						$(this).rotate({ animateTo:value});
+                        //console.log( getRotationDegrees($(this)) );
+						//console.log(getRotationDegrees($(this)));
+                    }
+                  }
+                });
+	
+				var textover_word; //變數：文字框
+                
+				$clone.TextOver({}, function() {
+                	textover_word = this;
+                });
+            }
+        }
+    });
+
+
+    $(".drag").draggable({
+        helper: 'clone'
+    });
+
+
+    $('.drop-zone .iconImg').resizable({ //this doesn't work because its cloned "inside" but its what I want working
+        helper: "ui-resizable-helper"
+    });
+	
+
+});
+
+
+function printContent(zone){
+	var restorepage = document.body.innerHTML;
+	var printcontent = document.getElementById(zone).innerHTML;
+	document.body.innerHTML = printcontent;
+	window.print();
+	document.body.innerHTML = restorepage;
+}
+
+function save()
+{
+  $("#test").data("jqScribble").save(function(imageData)
+  {
+    if(confirm("This will write a file using the example image_save.php. Is that cool with you?"))
+    {
+      $.post('image_save.php', {imagedata: imageData}, function(response)
+      {
+        $('body').append(response);
+      }); 
+    }
+  });
+}
+function addImage()
+{
+  var img = prompt("Enter the URL of the image.");
+  if(img !== '')$("#test").data("jqScribble").update({backgroundImage: img});
+}
+
+
+/*
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function (e) {
+            $('#blah').attr('src', e.target.result);
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+    
+    $("#imgInp").change(function(){
+        readURL(this);
+    });*/
+
+
+	//圖片輸入
+	/*var loadFile = function(event) {
+		var output = document.getElementById('output');
+		output.src = URL.createObjectURL(event.target.files[0]);
+	};*/
+
+</script>
+</head>
+
+
+<body>
+
+<div style="overflow: hidden; margin-bottom: 5px;">
+    <div class="column-left links">
+        <strong>BRUSHES:</strong>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brush: BasicBrush});'>Basic</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brush: LineBrush});'>Line</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brush: CrossBrush});'>Cross</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brush: DotBrush});'>Dot</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brush: CircleBrush});'>Circle</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brush: SemiCircleBrush});'>SemiCircle</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brush: RectangleBrush});'>Rectangle</a>
+    </div>
+    <div class="column-right links">
+        <strong>COLORS:</strong>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brushColor: "rgb(0,0,0)"});'>Black</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brushColor: "rgb(255,0,0)"});'>Red</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brushColor: "rgb(0,255,0)"});'>Green</a>
+        <a href="#" onclick='$("#test").data("jqScribble").update({brushColor: "rgb(0,0,255)"});'>Blue</a>
+    </div>
+
+
+
+  <div class="links" style="margin-top: 5px;">
+      <strong>OPTIONS:</strong>
+      <a href="#" onclick='addImage();'>Add Image</a>
+      <a href="#" onclick='$("#file").trigger("click");'>Add Local Image</a>
+      <input type="file" id="file" style="display:none;">
+      <a href="#" onclick='$("#test").data("jqScribble").clear();'>Clear</a>
+      <a href="#" onclick='$("#test").data("jqScribble").save();'>Save</a>
+      <a href="#" onclick='save();'>Custom Save</a>
+    </div>
+</div>
+
+<div class="drop-zone" id=zone>
+
+  <canvas id="test" style="border: 1px solid red; position: absolute;"></canvas>
+
+    <img id="uploadImg" alt="image"  style="" />	<!--圖片位置、大小，width="100" height="100" -->
+
+</div>	<!--上方框線範圍-->
+
+<div class="line">
+
+<hr align="center" width="95%" border:0; height:1px; background-color: #000000; color: #91989F>
+<!--hr:水平線，color for ie6-->
+</div>
+
+<div class="drag-area">	<!--圖片-->
+
+
+    <div class="drag"><img class="iconImg" id="beginning" src="img/beginning.png" title="起始點（beginning）"></div>
+  	<div class="drag"><img  class="iconImg" id="regular speed" src="img/regular speed.png" title="普通速度（regular speed）"></div>
+    <div class="drag"><img  class="iconImg" id="slow speed" src="img/slow speed.png" title="緩慢速度（slow speed）"></div>
+	<div class="drag"><img  class="iconImg" id="cross join" src="img/cross join.png" title="十字連接點（cross join）"></div>
+    <div class="drag"><img  class="iconImg" id="t-shape join" src="img/t-shape join.png" title="相交連接點（t-shape join）"></div>
+	<div class="drag"><img  class="iconImg" id="left diagonal join" src="img/left diagonal join.png" title="左斜向連接點（left diagonal join）"></div>
+	<div class="drag"><img  class="iconImg" id="right diagonal join" src="img/right diagonal join.png" title="右斜向連接點（right diagonal join）"></div>
+    <div class="drag"><img  class="iconImg" id="y-shape join" src="img/y-shape join.png" title="分叉接連接點（y-shape join）"></div>
+    <div class="drag"><img  class="iconImg" id="turn join" src="img/turn join.png" title="迴轉連接點（turn join）"></div>
+    <div class="drag"><img  class="iconImg" id="twist join" src="img/twist join.png" title="急彎連接點（twist join）"></div>
+    <div class="drag"><img  class="iconImg" id="node" src="img/node.png" title="節點（node）"></div>
+	<div class="drag"><img  class="iconImg" id="event" src="img/event.png" title="事件（event）"></div>
+    <div class="drag"><img  class="iconImg" id="arrow" src="img/arrow.png" title="箭頭（arrow）"></div>
+	<div class="drag"><img  class="iconImg" id="ending" src="img/ending.png" title="結束點（ending）"></div>
+
+</div>
+
+<div class="bu">
+
+<a href="#" class="button big gerrn" onClick="printContent('zone')">print!!!<span>your aleatory notation</span></a>
+<!--<button class="button" onclick="printContent('zone')">print your aleatory notation</button>-->	
+<!--列印的div id-->
+
+<input type="file" onChange="document.getElementById('uploadImg').src = window.URL.createObjectURL(this.files[0])">	<!--圖片輸入按鈕-->
+    
+</div>
+
+
+
+<div class="clear"></div>
+
+
+</body>
+</html>
